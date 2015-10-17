@@ -40,24 +40,32 @@ class LlamaCommand extends Command
     protected function configure()
     {
         $func = $this->configurator;
-        $func($this);
+        if (is_callable($func)) {
+            $func($this);
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $func = $this->executor;
-        return $func($input, $output);
+        if (is_callable($func)) {
+            return $func($input, $output);
+        }
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         $func = $this->interactor;
-        return $func($input, $output);
+        if (is_callable($func)) {
+            return $func($input, $output);
+        }
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $func = $this->initializer;
-        return $func($input, $output);
+        if (is_callable($func)) {
+            return $func($input, $output);
+        }
     }
 }

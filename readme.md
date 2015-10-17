@@ -33,9 +33,9 @@ In the typical use case, you would register the command with the console applica
     
     /* ... extra application setup ... */
     
+    $command = new Commands\GenericCommand('queue:listen');
     $console->add(
-        new Commands\GenericCommand(
-            'queue:listen',
+        $command->setConfigurator(
             function ($config) use ($app, $console) {
                 $config->setDescription('Listen for stuff to do')
                        ->addArgument(
@@ -43,7 +43,8 @@ In the typical use case, you would register the command with the console applica
                            InputArgument::OPTIONAL,
                            'How much stuff to listen for'
                        );
-            },
+            }
+        )->setExecutor(
             function ($input, $output) use ($app, $console) {
                 $pheanstalk = $app['pheanstalk'];
     
