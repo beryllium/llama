@@ -1,0 +1,18 @@
+{
+    "name": "beryllium/llama",
+    "description": "A generic command class for the Symfony Console Component that enables inline definition of lambda execution and configuration logic.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Boyd",
+            "email": "kevin.boyd@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^2.7"
+    },
+    "autoload": {
+      "psr-4": { "Beryllium\\Llama\\": "" }
+    }
+}
