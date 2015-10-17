@@ -13,6 +13,15 @@ class LlamaCommand extends Command
     protected $interactor;
     protected $initializer;
 
+    public function __construct($name, $configurator = null, $executor = null, $interactor = null, $initializer = null)
+    {
+        parent::__construct($name);
+        $this->setConfigurator($configurator);
+        $this->setExecutor($executor);
+        $this->setInteractor($interactor);
+        $this->setInitializer($initializer);
+    }
+
     public function setExecutor($callable)
     {
         $this->executor = $callable;
