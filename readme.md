@@ -33,7 +33,7 @@ In the typical use case, you would register the command with the console applica
     
     /* ... extra application setup ... */
     
-    $command = new Commands\GenericCommand('queue:listen');
+    $command = new Beryllium\Llama\LlamaCommand('queue:listen');
     $console->add(
         $command->setConfigurator(
             function ($config) use ($app, $console) {
