@@ -33,33 +33,30 @@ In the typical use case, you would register the command with the console applica
     
     /* ... extra application setup ... */
     
-    $command = new Beryllium\Llama\LlamaCommand('queue:listen');
-    $console->add(
-        $command->setConfigurator(
-            function ($config) use ($app, $console) {
-                $config->setDescription('Listen for stuff to do')
-                       ->addArgument(
-                           'items',
-                           InputArgument::OPTIONAL,
-                           'How much stuff to listen for'
-                       );
-            }
-        )->setExecutor(
-            function ($input, $output) use ($app, $console) {
-                $pheanstalk = $app['pheanstalk'];
-    
-                do {
-                    $job = $pheanstalk
-                      ->watch('testtube')
-                      ->ignore('default')
-                      ->reserve();
-    
-                    $output->writeln('Raw data: ' . $job->getData());
-                    $pheanstalk->delete($job);
-                } while (strtolower($job->getData()) !== 'halt');
-            }
-        )
-    );
+    $console->add(new Beryllium\Llama\LlamaCommand(
+        'queue:listen',
+        function ($config) use ($app, $console) {
+            $config->setDescription('Listen for stuff to do')
+                   ->addArgument(
+                       'items',
+                       InputArgument::OPTIONAL,
+                       'How much stuff to listen for'
+                   );
+        },
+        function ($input, $output) use ($app, $console) {
+            $pheanstalk = $app['pheanstalk'];
+
+            do {
+                $job = $pheanstalk
+                  ->watch('testtube')
+                  ->ignore('default')
+                  ->reserve();
+
+                $output->writeln('Raw data: ' . $job->getData());
+                $pheanstalk->delete($job);
+            } while (strtolower($job->getData()) !== 'halt');
+        }
+    ));
     
     $console->run();
     
