@@ -13,7 +13,7 @@ Because I find that early iterations of projects benefit from flexible definitio
 How do I use it?
 ---
 
-When you initialize a new ```LlamaCommand```, you pass it at minimum an "Executor" lambda that determines what the command does. You can also pass it a Configurator, an Initializer, or an Interactor. The Configurator lambda doesn't require any arguments, but the remaining lambdas should take this form:
+When you initialize a new ```LlamaCommand```, you pass it at minimum an "Executor" lambda that determines what the command does. You can also pass it a Configurator, an Initializer, or an Interactor. The Configurator lambda requires a ```$config``` parameter, and the remaining lambdas should take this form:
 
     function ($input, $output) use (... any scope you want to invoke inside ...) {
     }
