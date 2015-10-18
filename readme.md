@@ -1,6 +1,8 @@
 Llama Commander
 ---
 
+[![Build Status](https://travis-ci.org/beryllium/llama.svg)](https://travis-ci.org/beryllium/llama)
+
 This library is a helpful addition to the Symfony Console Component that allows developers to define Symfony Console Commands inline instead of having to create a class for each command.
 
 Why does it exist?
