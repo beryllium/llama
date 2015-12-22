@@ -111,7 +111,7 @@ class LlamaCommand extends Command
     {
         $func = $this->configurator;
         if (is_callable($func)) {
-            $func($this);
+            call_user_func($func, $this);
         }
     }
 
@@ -119,7 +119,7 @@ class LlamaCommand extends Command
     {
         $func = $this->executor;
         if (is_callable($func)) {
-            return $func($input, $output);
+            return call_user_func($func, $input, $output);
         }
     }
 
@@ -127,7 +127,7 @@ class LlamaCommand extends Command
     {
         $func = $this->interactor;
         if (is_callable($func)) {
-            return $func($input, $output);
+            return call_user_func($func, $input, $output);
         }
     }
 
@@ -135,7 +135,7 @@ class LlamaCommand extends Command
     {
         $func = $this->initializer;
         if (is_callable($func)) {
-            return $func($input, $output);
+            return call_user_func($func, $input, $output);
         }
     }
 }
