@@ -31,6 +31,26 @@ class LlamaCommandTest extends \PHPUnit_Framework_TestCase
         $this->assertSame("works\n", $output->fetch());
     }
 
+    public function testArrayCallbackSyntax()
+    {
+        $console = new Application();
+        $console->add(
+            new LlamaCommand(
+                'test:llama-command',
+                null,
+                array($this, 'simpleCallback')
+            )
+        );
+
+        $this->assertTrue($console->has('test:llama-command'));
+        $command = $console->get('test:llama-command');
+        $this->assertInstanceOf('Beryllium\Llama\LlamaCommand', $command);
+        $input  = new ArrayInput(array('test:llama-command'));
+        $output = new BufferedOutput();
+        $command->run($input, $output);
+        $this->assertSame("simple callback works\n", $output->fetch());
+    }
+
     public function testHelp()
     {
         $command = new LlamaCommand(
@@ -47,5 +67,10 @@ class LlamaCommandTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Beryllium\Llama\LlamaCommand', $command);
         $this->assertSame("test:llama-help [<items>]", $command->getSynopsis());
+    }
+
+    public function simpleCallback($input, $output)
+    {
+        $output->writeln('simple callback works');
     }
 }
