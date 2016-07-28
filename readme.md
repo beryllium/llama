@@ -32,112 +32,112 @@ When you initialize a new ```LlamaCommand```, you pass it at minimum a name (str
 "Executor" lambda (callable) that determines what the command does. You can also pass it a
 Configurator, an Initializer, or an Interactor.
 
-    ```php
-    $app     = new Application;        // Silex application
-    $console = new ConsoleApplication; // Symfony console component
+```php
+$app     = new Application;        // Silex application
+$console = new ConsoleApplication; // Symfony console component
 
-    /* ... extra application setup, defining the pheanstalk service, etc ... */
+/* ... extra application setup, defining the pheanstalk service, etc ... */
 
-    $console->add(new Beryllium\Llama\LlamaCommand(
-        'queue:listen',     // Start a queue listener
-        null,               // No configuration at this time
-        function ($input, $output) use ($app, $console) {
-            do {
-                $job = $app['pheanstalk']
-                  ->watch('testtube')
-                  ->ignore('default')
-                  ->reserve();
+$console->add(new Beryllium\Llama\LlamaCommand(
+    'queue:listen',     // Start a queue listener
+    null,               // No configuration at this time
+    function ($input, $output) use ($app, $console) {
+        do {
+            $job = $app['pheanstalk']
+              ->watch('testtube')
+              ->ignore('default')
+              ->reserve();
 
-                $output->writeln('Raw data: ' . $job->getData());
-                $app['pheanstalk']->delete($job);
-            } while (strtolower($job->getData()) !== 'halt');
-        }
-    ));
+            $output->writeln('Raw data: ' . $job->getData());
+            $app['pheanstalk']->delete($job);
+        } while (strtolower($job->getData()) !== 'halt');
+    }
+));
 
-    $console->run();
-    ```
+$console->run();
+```
 
 If your command needs to have options or arguments, you can specify an anonymous
-function for that:
+Configurator function for that:
 
-    ```php
-    $console->add(new Beryllium\Llama\LlamaCommand(
-        'queue:listen',     // Start a queue listener
-        function ($config) use ($app, $console) {
-            $config->setDescription('Listen for stuff to do')
-                   ->addArgument(
-                       'items',
-                       InputArgument::OPTIONAL,
-                       'How much stuff to listen for'
-                   );
-        },
-        function ($input, $output) use ($app, $console) {
-            // ... command code goes here
-        }
-    ));
-    ```
+```php
+$console->add(new Beryllium\Llama\LlamaCommand(
+    'queue:listen',     // Start a queue listener
+    function ($config) use ($app, $console) {
+        $config->setDescription('Listen for stuff to do')
+               ->addArgument(
+                   'items',
+                   InputArgument::OPTIONAL,
+                   'How much stuff to listen for'
+               );
+    },
+    function ($input, $output) use ($app, $console) {
+        // ... command code goes here
+    }
+));
+```
 
 If you want your code to be more precise, you can also typehint the main lambda.
 This will help your IDE give you hints about how to interact with $input and
 $output:
 
-    ```php
-    use Symfony\Component\Console\Input\InputInterface;
-    use Symfony\Component\Console\Output\OutputInterface;
+```php
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-    $app     = new Application;        // Silex application
-    $console = new ConsoleApplication; // Symfony console component
+$app     = new Application;        // Silex application
+$console = new ConsoleApplication; // Symfony console component
 
-    /* ... extra application setup ... */
+/* ... extra application setup ... */
 
-    $console->add(new Beryllium\Llama\LlamaCommand(
-        'queue:listen',     // Start a queue listener
-        null,               // No configuration at this time
-        function (InputInterface $input, OutputInterface $output) use ($app, $console) {
-            // ... now $input and $output are type-hinted
-        }
-    ));
+$console->add(new Beryllium\Llama\LlamaCommand(
+    'queue:listen',     // Start a queue listener
+    null,               // No configuration at this time
+    function (InputInterface $input, OutputInterface $output) use ($app, $console) {
+        // ... now $input and $output are type-hinted
+    }
+));
 
-    $console->run();
-    ```
+$console->run();
+```
 
 Combining the above examples, you would register the command with the console application like so:
 
-    ```php
-    use Symfony\Component\Console\Input\InputInterface;
-    use Symfony\Component\Console\Output\OutputInterface;
+```php
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-    $app     = new Application;        // Silex application
-    $console = new ConsoleApplication; // Symfony console component
+$app     = new Application;        // Silex application
+$console = new ConsoleApplication; // Symfony console component
 
-    /* ... extra application setup, defining the pheanstalk service, etc ... */
+/* ... extra application setup, defining the pheanstalk service, etc ... */
 
-    $console->add(new Beryllium\Llama\LlamaCommand(
-        'queue:listen',
-        function ($config) use ($app, $console) {
-            $config->setDescription('Listen for stuff to do')
-                   ->addArgument(
-                       'items',
-                       InputArgument::OPTIONAL,
-                       'How much stuff to listen for'
-                   );
-        },
-        function (InputInterface $input, OutputInterface $output) use ($app, $console) {
-            $pheanstalk = $app['pheanstalk'];
+$console->add(new Beryllium\Llama\LlamaCommand(
+    'queue:listen',
+    function ($config) use ($app, $console) {
+        $config->setDescription('Listen for stuff to do')
+               ->addArgument(
+                   'items',
+                   InputArgument::OPTIONAL,
+                   'How much stuff to listen for'
+               );
+    },
+    function (InputInterface $input, OutputInterface $output) use ($app, $console) {
+        $pheanstalk = $app['pheanstalk'];
 
-            do {
-                $job = $pheanstalk
-                  ->watch('testtube')
-                  ->ignore('default')
-                  ->reserve();
+        do {
+            $job = $pheanstalk
+              ->watch('testtube')
+              ->ignore('default')
+              ->reserve();
 
-                $output->writeln('Raw data: ' . $job->getData());
-                $pheanstalk->delete($job);
-            } while (strtolower($job->getData()) !== 'halt');
-        }
-    ));
+            $output->writeln('Raw data: ' . $job->getData());
+            $pheanstalk->delete($job);
+        } while (strtolower($job->getData()) !== 'halt');
+    }
+));
 
-    $console->run();
-    ```
+$console->run();
+```
 
 And that's all for now. If you would like to learn more about how to use the Symfony Console Component, the Symfony website has a [very helpful documentation page about it](http://symfony.com/doc/current/components/console/introduction.html).
