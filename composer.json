@@ -1,6 +1,6 @@
 {
     "name": "beryllium/llama",
-    "description": "A generic command class for the Symfony Console Component that enables inline definition of lambda execution and configuration logic.",
+    "description": "Llama Commander lets you use anonymous functions as console commands via the Symfony Console Component.",
     "type": "library",
     "license": "MIT",
     "authors": [
